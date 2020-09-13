@@ -1,28 +1,37 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-tidyMicro
-----------
 
-A pipeline for microbiome analysis and visualization
+# tidyMicro
 
+<!-- badges: start -->
 
-### Main Features
+<!-- badges: end -->
 
--   Merge any number OTU tables with clinical data into one tidy data set
+The goal of tidyMicro is to provide a cohesive pipeline for microbiome
+data analysis and visualization.
 
--   Data visualization for exploration
+## Installation
 
--   Calculate, analyze, and visualize diversity measures
-
--   Fit negative binomial, beta binomial, rank sum, and presence absence models
-
--   Create stacked bar charts based on negative binomial and beta binomial model estimates
-
--   Longitudinal and Three Mode PCA plots
-
-### Intallation
+You can install the released version of tidyMicro from
+[CRAN](https://CRAN.R-project.org) with:
 
 ``` r
-# install.packages("devtools")
-devtools::install_github("CharlieCarpenter/tidyMicro")
+install.packages("tidyMicro")
 ```
+
+## Main Features
+
+  - Merge any number OTU tables with clinical data into one tidy data
+    set
+
+  - Data visualization for exploration
+
+  - Calculate, analyze, and visualize diversity measures
+
+  - Fit negative binomial, beta binomial, rank sum, and presence absence
+    models
+
+  - Create stacked bar charts based on negative binomial and beta
+    binomial model estimates
+
+  - Longitudinal PCA plots

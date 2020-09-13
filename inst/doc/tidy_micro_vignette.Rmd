@@ -2,23 +2,19 @@
 title: "The tidyMicro Pipeline"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{The tidyMicro Pipeline}
+  %\VignetteIndexEntry{tidyMicro Vignette}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-```
-
 # Installation
 
 ```{r, eval = FALSE}
-install.packages("devtools")
-devtools::install_github("CharlieCarpenter/tidyMicro")
+## First
+# install.packages('tidyMicro')
+## Or
+# devtools::install_github("CharlieCarpenter/tidyMicro")
+
 library(tidyMicro); library(magrittr)
 ```
 
@@ -34,13 +30,13 @@ library(tidyMicro); library(magrittr)
 
 ```{r data}
 ## Loading OTU tables
-data(phy, package = "tidyMicro")
-data(cla, package = "tidyMicro")
-data(ord, package = "tidyMicro")
-data(fam, package = "tidyMicro")
+data(bpd_phy, package = "tidyMicro")
+data(bpd_cla, package = "tidyMicro")
+data(bpd_ord, package = "tidyMicro")
+data(bpd_fam, package = "tidyMicro")
 
 ## Loading meta data to merge with OTU table
-data(clin, package = "tidyMicro")
+data(bpd_clin, package = "tidyMicro")
 ```
   
   The **clinical data** must have a column of *unique* sequencing libraries named "Lib" that match the column names of your OTU table(s).
@@ -51,7 +47,7 @@ data(clin, package = "tidyMicro")
 3. The rest of the table is populated with sequencing counts.
 
 ```{r, echo = F}
-cla[1:6, 1:6] %>% knitr::kable()
+bpd_cla[1:6, 1:6] %>% knitr::kable()
 ```
 
 ## tidy_micro {#TM}
@@ -68,30 +64,32 @@ cla[1:6, 1:6] %>% knitr::kable()
 ```{r, eval=FALSE}
 
 ## 1. Single OTU table
-micro.set <- tidy_micro(otu_tabs = cla,        ## OTU Table
+micro.set <- tidy_micro(otu_tabs = bpd_cla,    ## OTU Table
                         tab_names = "Class",   ## OTU Names (Ranks)
-                        clinical = clin)       ## Clinical Data
+                        clinical = bpd_clin)   ## Clinical Data
 
 ## 2. Unnamed List
-otu_tabs <- list(phy, cla, ord, fam)
+otu_tabs <- list(bpd_phy, bpd_cla, bpd_ord, bpd_fam)
 tab_names <- c("Phylum", "Class", "Order", "Family")
 
 micro.set <- tidy_micro(otu_tabs = otu_tabs,   ## OTU Table
                         tab_names = tab_names, ## OTU Names (Ranks)
-                        clinical = clin)       ## Clinical Data
+                        clinical = bpd_clin)   ## Clinical Data
 
 ## 3. Named List
-otu_tabs <- list(Phylum = phy, Class = cla, Order = ord, Family = fam)
+otu_tabs <- list(Phylum = bpd_phy, Class = bpd_cla, 
+                 Order = bpd_ord, Family = bpd_fam)
 
 micro.set <- tidy_micro(otu_tabs = otu_tabs,  ## OTU Table
-                        clinical = clin)      ## Clinical Data
+                        clinical = bpd_clin)  ## Clinical Data
 ```
 
 ```{r, include = F}
-otu_tabs <- list(Phylum = phy, Class = cla, Order = ord, Family = fam)
+otu_tabs <- list(Phylum = bpd_phy, Class = bpd_cla, 
+                 Order = bpd_ord, Family = bpd_fam)
 
 micro.set <- tidy_micro(otu_tabs = otu_tabs,  ## OTU Table
-                        clinical = clin)      ## Clinical Data
+                        clinical = bpd_clin)  ## Clinical Data
 ```
   
   The default for this function is to keep only the libraries found in each of the OTU tables' column names and the sequencing library column of your clinical data. You will receive a warning if some libraries are excluded during the merge. This option can be turned off by setting the option `complete_clinical = FALSE`.  
@@ -157,7 +155,7 @@ micro.set %>%
 
 ```{r}
 long_micro <- tidy_micro(otu_tabs = otu_tabs,  ## OTU tables
-                         clinical = clin)      ## clinical Data
+                         clinical = bpd_clin)  ## clinical Data
 ```
 
 #### Three Mode PCA
@@ -177,24 +175,15 @@ long_micro %>%
 
 #### 3D PCA
   
-  These 3D plots collapse over a chosen dimension of variation (e.g. time, subject, or taxa) and perform principle component / coordinate analyses on the remaining two dimensions.
+  These 3D plots are a method for making PCA or PCoA plots for data with repeated measures. They will help us view trends within each time point, or help us understand when large changes in community composition occur. For instance, we may be able to detect linear trends within a single time point, or see that composition makes a large departure at a specific time point. Unfortunately, we do not see dramatic shifts in composition from week to week in this data set.
   
-  In order to make the function work we need to supply a subject, time, and the number of time points as in the `three_mode` function. 
+  In order to make the function work properly we need to supply a subject and time column.
   
 ```{r pca3dTime, fig.cap="3D Time PCoA Plot. Plotting principle coordinants collapsing over time axis.", fig.width=6, fig.height=4}
 long_micro %>%
   pca_3d(table = "Family", time_var = day, subject = study_id, 
-         modes = "AC", type = "PCoA")
+         type = "PCoA", legend.title = "Day")
 ```
-
-You can change which axis to collapse over by changing the "modes" to either "BA" or "CB".
-
-```{r pca3DSubj, fig.cap="3D Subject PCoA Plot. Plotting principle coordinants collapsing over subject axis.", fig.width=6, fig.height=4}
-long_micro %>%
-  pca_3d(table = "Family", time_var = day, subject = study_id, 
-         modes = "CB", type = "PCoA")
-```
-
 
 ## Bar Charts {#RA}
 

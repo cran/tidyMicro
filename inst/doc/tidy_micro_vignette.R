@@ -1,12 +1,9 @@
-## ---- include = FALSE---------------------------------------------------------
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-
 ## ---- eval = FALSE------------------------------------------------------------
-#  install.packages("devtools")
-#  devtools::install_github("CharlieCarpenter/tidyMicro")
+#  ## First
+#  # install.packages('tidyMicro')
+#  ## Or
+#  # devtools::install_github("CharlieCarpenter/tidyMicro")
+#  
 #  library(tidyMicro); library(magrittr)
 
 ## ---- include = FALSE---------------------------------------------------------
@@ -14,43 +11,45 @@ library(tidyMicro); library(magrittr)
 
 ## ----data---------------------------------------------------------------------
 ## Loading OTU tables
-data(phy, package = "tidyMicro")
-data(cla, package = "tidyMicro")
-data(ord, package = "tidyMicro")
-data(fam, package = "tidyMicro")
+data(bpd_phy, package = "tidyMicro")
+data(bpd_cla, package = "tidyMicro")
+data(bpd_ord, package = "tidyMicro")
+data(bpd_fam, package = "tidyMicro")
 
 ## Loading meta data to merge with OTU table
-data(clin, package = "tidyMicro")
+data(bpd_clin, package = "tidyMicro")
 
 ## ---- echo = F----------------------------------------------------------------
-cla[1:6, 1:6] %>% knitr::kable()
+bpd_cla[1:6, 1:6] %>% knitr::kable()
 
 ## ---- eval=FALSE--------------------------------------------------------------
 #  
 #  ## 1. Single OTU table
-#  micro.set <- tidy_micro(otu_tabs = cla,        ## OTU Table
+#  micro.set <- tidy_micro(otu_tabs = bpd_cla,    ## OTU Table
 #                          tab_names = "Class",   ## OTU Names (Ranks)
-#                          clinical = clin)       ## Clinical Data
+#                          clinical = bpd_clin)   ## Clinical Data
 #  
 #  ## 2. Unnamed List
-#  otu_tabs <- list(phy, cla, ord, fam)
+#  otu_tabs <- list(bpd_phy, bpd_cla, bpd_ord, bpd_fam)
 #  tab_names <- c("Phylum", "Class", "Order", "Family")
 #  
 #  micro.set <- tidy_micro(otu_tabs = otu_tabs,   ## OTU Table
 #                          tab_names = tab_names, ## OTU Names (Ranks)
-#                          clinical = clin)       ## Clinical Data
+#                          clinical = bpd_clin)   ## Clinical Data
 #  
 #  ## 3. Named List
-#  otu_tabs <- list(Phylum = phy, Class = cla, Order = ord, Family = fam)
+#  otu_tabs <- list(Phylum = bpd_phy, Class = bpd_cla,
+#                   Order = bpd_ord, Family = bpd_fam)
 #  
 #  micro.set <- tidy_micro(otu_tabs = otu_tabs,  ## OTU Table
-#                          clinical = clin)      ## Clinical Data
+#                          clinical = bpd_clin)  ## Clinical Data
 
 ## ---- include = F-------------------------------------------------------------
-otu_tabs <- list(Phylum = phy, Class = cla, Order = ord, Family = fam)
+otu_tabs <- list(Phylum = bpd_phy, Class = bpd_cla, 
+                 Order = bpd_ord, Family = bpd_fam)
 
 micro.set <- tidy_micro(otu_tabs = otu_tabs,  ## OTU Table
-                        clinical = clin)      ## Clinical Data
+                        clinical = bpd_clin)  ## Clinical Data
 
 ## ---- echo = F----------------------------------------------------------------
 micro.set[1:6, 1:12] %>% knitr::kable()
@@ -78,7 +77,7 @@ micro.set %>%
 
 ## -----------------------------------------------------------------------------
 long_micro <- tidy_micro(otu_tabs = otu_tabs,  ## OTU tables
-                         clinical = clin)      ## clinical Data
+                         clinical = bpd_clin)  ## clinical Data
 
 ## ----ThreeMode, fig.cap="Three Mode PCA Plot. Principle components controlled for repeaated measures.", fig.width=6, fig.height=4----
 long_micro %>% 
@@ -89,12 +88,7 @@ long_micro %>%
 ## ----pca3dTime, fig.cap="3D Time PCoA Plot. Plotting principle coordinants collapsing over time axis.", fig.width=6, fig.height=4----
 long_micro %>%
   pca_3d(table = "Family", time_var = day, subject = study_id, 
-         modes = "AC", type = "PCoA")
-
-## ----pca3DSubj, fig.cap="3D Subject PCoA Plot. Plotting principle coordinants collapsing over subject axis.", fig.width=6, fig.height=4----
-long_micro %>%
-  pca_3d(table = "Family", time_var = day, subject = study_id, 
-         modes = "CB", type = "PCoA")
+         type = "PCoA", legend.title = "Day")
 
 ## ----raBars, fig.cap = "Stack Bar Chart. Stacked bar charts of taxa relative abundance by BPD severity.", fig.width=6, fig.height=4----
 ra_bars(micro.set,         ## Dataset

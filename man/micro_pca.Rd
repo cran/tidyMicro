@@ -12,6 +12,8 @@ micro_pca(
   y = clr,
   scale = TRUE,
   axes_arrows = F,
+  ellipse = FALSE,
+  ellipse.prob = 0.68,
   main = NULL,
   subtitle = NULL,
   legend_title = NULL
@@ -24,13 +26,17 @@ micro_pca(
 
 \item{dist}{A distance matrix, such as a beta diversity. If supplied a PCoA plot will be returned}
 
-\item{grp_var}{Categorical grouping variable for color}
+\item{grp_var}{Categorical grouping variable}
 
 \item{y}{Value to calculate principle components or coordinates on. Default is centered log ratio (recommended)}
 
 \item{scale}{Logical. Indicating whether the variables should be scaled to have unit variance before the analysis takes place}
 
 \item{axes_arrows}{Logical. Plot component axes arrows}
+
+\item{ellipse}{Logical. Plot normal data ellipses by groups}
+
+\item{ellipse.prob}{Numeric.}
 
 \item{main}{Plot title}
 
@@ -48,21 +54,17 @@ Principle components are calculated on the centerted log ratio tranformation of 
 PCA calculation is done by a singular value decomposition of the (centered and possibly scaled) data matrix, not by using eigen on the covariance matrix. This is generally the preferred method for numerical accuracy. Calculations are accomplished through the \code{\link[stats]{prcomp}} function, and the plot is created through internal code based on the ggbiplot function \url{https://github.com/vqv/ggbiplot}.
 }
 \examples{
-data(phy); data(cla); data(ord); data(fam); data(clin)
+data(mrsa_gen); data(mrsa_clin)
 
-otu_tabs <- list(Phylum = phy, Class = cla, Order = ord, Family = fam)
-set <- tidy_micro(otu_tabs = otu_tabs, clinical = clin) \%>\%
-filter(day == 7) ## Only including first week
+set <- tidy_micro(otu_tabs = mrsa_gen, tab_names = "Genus", clinical = mrsa_clin)
 
 ## PCA Plot
-set \%>\% micro_pca(table = "Family", grp_var = bpd1)
+set \%>\% micro_pca(table = "Genus", grp_var = Aureus_Positive)
 
 ## PCoA Plot (Recommended for p > n)
 
-bray_beta <- set \%>\% beta_div(table = "Family")
-
-set \%>\%
-micro_pca(dist = bray_beta, grp_var = bpd1)
+bray_beta <- set \%>\% beta_div(table = "Genus")
+micro_pca(set, dist = bray_beta, grp_var = Aureus_Positive, ellipse = TRUE)
 
 }
 \references{

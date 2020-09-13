@@ -1,4 +1,4 @@
-#' A data set containing the clinical data of the subjects sequenced
+#' A data set containing the clinical data of the subjects sequenced for BPD1 study
 #'
 #' Infants who required mechanical ventilation had tracheal aspirates samples collected at 7, 14, and 21 days of age (+/- 48 hours). Infants who were mechanically ventilated and had at least one tracheal aspirate collected were included in this study. Subjects were required to be enrolled within 7 days of age. Bacterial profiles were determined by broad-range amplification and sequence analysis of 16S rRNA genes
 #'
@@ -14,4 +14,4 @@
 #' \item{\code{Lib}}{A character vector of sequencing library names}
 #' }
 #' @source \url{https://doi.org/10.1371/journal.pone.0170120}
-"clin"
+"bpd_clin"
